@@ -30,7 +30,63 @@ export const REPOSITORIES: RepoConfig[] = [
     securityScan: true,
     e2eTest: false
   },
-  // Add more bigknoxy repositories here
+  // Key application repositories
+  {
+    owner: "bigknoxy",
+    name: "joshbot",
+    branch: "main",
+    pipelineNotify: true,
+    securityScan: true,
+    e2eTest: true
+  },
+  {
+    owner: "bigknoxy",
+    name: "joshify",
+    branch: "main",
+    pipelineNotify: true,
+    securityScan: true,
+    e2eTest: false
+  },
+  {
+    owner: "bigknoxy",
+    name: "chicken-mob",
+    branch: "main",
+    pipelineNotify: true,
+    securityScan: true,
+    e2eTest: false
+  },
+  {
+    owner: "bigknoxy",
+    name: "chop-it-like-its-hawt",
+    branch: "main",
+    pipelineNotify: true,
+    securityScan: false, // Game repo
+    e2eTest: true
+  },
+  {
+    owner: "bigknoxy",
+    name: "swarm-agent",
+    branch: "main",
+    pipelineNotify: true,
+    securityScan: true,
+    e2eTest: false
+  },
+  {
+    owner: "bigknoxy",
+    name: "frame-kit",
+    branch: "main",
+    pipelineNotify: true,
+    securityScan: true,
+    e2eTest: false
+  },
+  {
+    owner: "bigknoxy",
+    name: "ghAuto",
+    branch: "main",
+    pipelineNotify: true,
+    securityScan: true,
+    e2eTest: false
+  }
 ];
 
 export const MONITOR_CONFIG = {
