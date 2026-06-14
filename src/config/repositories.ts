@@ -20,15 +20,17 @@ export interface RepoConfig {
 }
 
 export const REPOSITORIES: RepoConfig[] = [
-  // Add bigknoxy repositories here
-  // Example format:
-  // {
-  //   owner: "bigknoxy",
-  //   name: "repo-name",
-  //   pipelineNotify: true,
-  //   securityScan: true,
-  //   e2eTest: true
-  // }
+  // Dogfooding - monitoring this repo itself
+  {
+    owner: "bigknoxy",
+    name: "autoJobs",
+    autoClone: true,
+    branch: "master",
+    pipelineNotify: true,
+    securityScan: true,
+    e2eTest: false
+  },
+  // Add more bigknoxy repositories here
 ];
 
 export const MONITOR_CONFIG = {

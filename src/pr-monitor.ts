@@ -31,7 +31,7 @@ export function getOpenPRs(owner: string, repo: string): PRInfo[] {
 export function getPipelineStatus(owner: string, repo: string, prNumber: number): string {
   try {
     const json = execSync(
-      `gh pr view --repo ${owner}/${repo} --json statusCheckRollup`,
+      `gh pr view ${prNumber} --repo ${owner}/${repo} --json statusCheckRollup`,
       { encoding: 'utf8' }
     );
     const data = JSON.parse(json);
