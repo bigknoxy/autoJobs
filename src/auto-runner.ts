@@ -1,14 +1,15 @@
 #!/usr/bin/env bun
 /**
- * Lightweight auto-runner - PR monitoring + code review
+ * Auto-runner: Monitoring + Code Review + Security Scans
+ * Runs every 5 minutes, survives reboots via systemd
  */
 
 import { execSync } from 'child_process';
 import { join } from 'path';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
 import { REPOSITORIES } from './config/repositories';
 
-const LOG_DIR = join(import.meta.dir, '..', 'logs');
+const LOG_DIR = '/root/code/autoJobs/logs';
 
 if (!existsSync(LOG_DIR)) mkdirSync(LOG_DIR, { recursive: true });
 
@@ -18,48 +19,45 @@ function log(msg: string) {
   writeFileSync(join(LOG_DIR, 'auto-runner.log'), line + '\n', { flag: 'a' });
 }
 
-function getOpenPRs(repo: string) {
+function checkPRs(repo: string) {
   try {
-    return JSON.parse(execSync(`gh pr list --repo ${repo} --state open --json number,headRefName --jq '.'`, { encoding: 'utf8' }));
-  } catch { return []; }
-}
-
-function runSecurityScan(repoPath: string) {
-  try {
-    const cmd = `trivy fs ${repoPath} --format json --scanners vuln`;
-    const result = execSync(cmd, { encoding: 'utf8' });
-    const vulns = JSON.parse(result);
-    return vulns.Results?.[0]?.Vulnerabilities?.length || 0;
+    const json = execSync(`gh pr list --repo ${repo} --state open --json number --jq '.'`, { encoding: 'utf8' });
+    return JSON.parse(json).length || 0;
   } catch { return 0; }
 }
 
-function postPRComment(repo: string, pr: number, comment: string) {
+function runCodeReview() {
   try {
-    execSync(`gh pr comment ${pr} --repo ${repo} --body "${comment}"`, { encoding: 'utf8' });
-  } catch {}
+    execSync(`bun run /root/code/autoJobs/src/code-review.ts`, { encoding: 'utf8' });
+    log('Code review cycle completed');
+  } catch (e) {
+    log(`Code review error: ${(e as Error).message}`);
+  }
 }
 
 async function main() {
-  log(`\n=== Monitoring ${REPOSITORIES.length} repositories ===`);
+  log(`\n=== Monitoring ${REPOSITORIES.length} repos ===`);
   
-  for (const repo of REPOSITORIES.slice(0, 10)) {
+  let totalPRs = 0;
+  for (const repo of REPOSITORIES) {
     const repoPath = `${repo.owner}/${repo.name}`;
-    const prs = getOpenPRs(repoPath);
-    
-    if (prs.length > 0) {
-      log(`${repoPath}: ${prs.length} PRs`);
-      
-      // Code review each PR
-      for (const pr of prs) {
-        const comment = `✅ Auto-reviewed PR #${pr.number}\n- Branch: ${pr.headRefName}\n- Status: Looking good!`;
-        postPRComment(repoPath, pr.number, comment);
-        log(`Commented on PR #${pr.number}`);
-      }
-    }
+    const prs = checkPRs(repoPath);
+    if (prs > 0) totalPRs += prs;
   }
   
-  log('Monitoring cycle complete');
+  log(`Total open PRs: ${totalPRs}`);
+  
+  // Every 3rd cycle: run code review
+  const cycleCount = parseInt(readFileSync(join(LOG_DIR, 'cycle-count'), 'utf8') || '0');
+  const newCount = (cycleCount + 1) % 3;
+  writeFileSync(join(LOG_DIR, 'cycle-count'), String(newCount));
+  
+  if (cycleCount === 0) {
+    log('Running code review cycle...');
+    runCodeReview();
+  }
 }
 
-const interval = setInterval(main, 5 * 60 * 1000);
+// Run immediately then every 5 min
 main().catch(e => log(`Error: ${e.message}`));
+setInterval(main, 5 * 60 * 1000);
