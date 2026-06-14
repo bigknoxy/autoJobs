@@ -1,0 +1,22 @@
+{
+  "name": "bigknoxy-repo-monitor",
+  "version": "1.0.0",
+  "description": "Automated scripts and cron jobs to monitor, update, maintain, and build features for bigknoxy repos",
+  "type": "module",
+  "scripts": {
+    "monitor": "bun run src/orchestrator.ts",
+    "pr-check": "bun run src/pr-monitor.ts",
+    "security-scan": "bun run src/security-scan.ts",
+    "e2e-test": "bun run src/e2e-test.ts",
+    "sync": "bun run src/repo-sync.ts",
+    "setup-cron": "bun run src/setup-cron.ts",
+    "install-skills": "bun run src/install-skills.ts"
+  },
+  "dependencies": {
+    "concise": "^2.0.0",
+    "cron-parser": "^1.0.0"
+  },
+  "devDependencies": {
+    "bun": "latest"
+  }
+}

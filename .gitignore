@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+.bun/
+
+# Logs
+logs/*.log
+logs/*.json
+
+# Worktrees
+worktrees/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pi sessions
+.pi/agent/sessions/
+
+# Build
+dist/
+*.tsbuildinfo
