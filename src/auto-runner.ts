@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Auto-runner: Monitoring + Code Review + Security Scans
+ * Auto-runner: Monitoring + Code Review + Dogfood Testing
  * Runs every 5 minutes, survives reboots via systemd
  */
 
@@ -21,8 +21,7 @@ function log(msg: string) {
 
 function checkPRs(repo: string) {
   try {
-    const json = execSync(`gh pr list --repo ${repo} --state open --json number --jq '.'`, { encoding: 'utf8' });
-    return JSON.parse(json).length || 0;
+    return JSON.parse(execSync(`gh pr list --repo ${repo} --state open --json number --jq '.'`, { encoding: 'utf8' })).length || 0;
   } catch { return 0; }
 }
 
@@ -35,29 +34,39 @@ function runCodeReview() {
   }
 }
 
+function runDogfoodTest() {
+  try {
+    execSync(`bun run /root/code/autoJobs/src/dogfood-test.ts`, { encoding: 'utf8' });
+    log('Dogfood test cycle completed');
+  } catch (e) {
+    log(`Dogfood test error: ${(e as Error).message}`);
+  }
+}
+
 async function main() {
   log(`\n=== Monitoring ${REPOSITORIES.length} repos ===`);
   
   let totalPRs = 0;
   for (const repo of REPOSITORIES) {
     const repoPath = `${repo.owner}/${repo.name}`;
-    const prs = checkPRs(repoPath);
-    if (prs > 0) totalPRs += prs;
+    totalPRs += checkPRs(repoPath);
   }
   
   log(`Total open PRs: ${totalPRs}`);
   
-  // Every 3rd cycle: run code review
+  // Cycle-based actions
   const cycleCount = parseInt(readFileSync(join(LOG_DIR, 'cycle-count'), 'utf8') || '0');
-  const newCount = (cycleCount + 1) % 3;
+  const newCount = (cycleCount + 1) % 4;
   writeFileSync(join(LOG_DIR, 'cycle-count'), String(newCount));
   
   if (cycleCount === 0) {
-    log('Running code review cycle...');
+    log('Running code review...');
     runCodeReview();
+  } else if (cycleCount === 2) {
+    log('Running dogfood tests...');
+    runDogfoodTest();
   }
 }
 
-// Run immediately then every 5 min
 main().catch(e => log(`Error: ${e.message}`));
 setInterval(main, 5 * 60 * 1000);
