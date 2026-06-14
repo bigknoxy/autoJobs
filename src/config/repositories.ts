@@ -38,7 +38,7 @@ export const MONITOR_CONFIG = {
   workDir: "/root/code/autoJobs/worktrees",
   // Pi coding assistant config
   pi: {
-    model: "poolside/lagina-m.1",
+    model: "poolside/laguna-m.1",
     provider: "poolside",
     // Thinking level for complex tasks
     thinking: "high"
