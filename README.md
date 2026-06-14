@@ -57,7 +57,7 @@ bun run src/orchestrator.ts
 The main coordinator that spawns parallel workers for each repository.
 
 ```bash
-pi --skill skills/orchestration/maintainer-orchestrator.skill.md --model poolside/lagina-m.1 "Start monitoring"
+pi --skill skills/orchestration/maintainer-orchestrator.skill.md --model poolside/laguna-m.1 "Start monitoring"
 ```
 
 ### PR Monitor
