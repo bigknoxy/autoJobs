@@ -27,7 +27,7 @@ function checkPRs(repo: string) {
 
 function runCodeReview() {
   try {
-    execSync(`bun run /root/code/autoJobs/src/code-review.ts`, { encoding: 'utf8' });
+    execSync(`/root/.bun/bin/bun run /root/code/autoJobs/src/code-review.ts`, { encoding: 'utf8' });
     log('Code review cycle completed');
   } catch (e) {
     log(`Code review error: ${(e as Error).message}`);
@@ -36,7 +36,7 @@ function runCodeReview() {
 
 function runDogfoodTest() {
   try {
-    execSync(`bun run /root/code/autoJobs/src/dogfood-test.ts`, { encoding: 'utf8' });
+    execSync(`/root/.bun/bin/bun run /root/code/autoJobs/src/dogfood-test.ts`, { encoding: 'utf8' });
     log('Dogfood test cycle completed');
   } catch (e) {
     log(`Dogfood test error: ${(e as Error).message}`);
