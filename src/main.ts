@@ -4,7 +4,7 @@
  * 
  * Usage:
  *   bun run src/main.ts            # Single run
- *   bun run src/main.ts --loop     # Continuous loop (every 5 min)
+ *   bun run src/main.ts --loop     # Continuous loop (hourly)
  *   bun run src/main.ts --once     # Single run, exit
  */
 
@@ -39,6 +39,7 @@ async function runCycle() {
   
   log(`Executing ${tasks.length} tasks`);
   
+  // Note: interval reduced from 5min to 60min to minimize DNS load
   // For parallel execution, we could use Promise.all with concurrency limit
   // but pi has built-in concurrency via sessions so sequential is fine
   for (const task of tasks) {
@@ -60,10 +61,11 @@ const shouldLoop = args.includes('--loop') || args.includes('-l');
 
 if (shouldLoop) {
   log('Starting continuous loop (Ctrl+C to stop)');
+  log('Note: Interval reduced from 5min to 60min to minimize DNS load');
   
   const interval = setInterval(() => {
     runCycle().catch(e => log(`Cycle error: ${e.message}`));
-  }, 5 * 60 * 1000); // 5 minutes
+  }, 60 * 60 * 1000); // 60 minutes (reduced from 5 minutes)
   
   // Initial run
   runCycle().catch(e => log(`Initial run error: ${e.message}`));
