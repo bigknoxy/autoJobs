@@ -73,8 +73,8 @@ export const REPOSITORIES: RepoConfig[] = [
 ];
 
 export const MONITOR_CONFIG = {
-  // Check interval in minutes
-  interval: 5,
+  // Check interval in minutes (hourly cadence: lower DNS/API load while keeping all repos monitored)
+  interval: 60,
   // Working directory for clones
   workDir: "/root/code/autoJobs/worktrees",
   // Pi coding assistant config

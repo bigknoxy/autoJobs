@@ -2,9 +2,9 @@
 node_modules/
 .bun/
 
-# Logs
-logs/*.log
-logs/*.json
+# Logs (runtime state, including the cycle counter)
+logs/*
+!logs/.gitkeep
 
 # Worktrees
 worktrees/
@@ -23,3 +23,5 @@ Thumbs.db
 # Build
 dist/
 *.tsbuildinfo
+# Lean-ctx tool state
+.lean-ctx/

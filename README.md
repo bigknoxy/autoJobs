@@ -21,7 +21,9 @@ bigknoxy-repo-monitor/
 │   ├── security/            # Security scanning skills
 │   └── testing/             # E2E testing skills
 ├── src/
-│   ├── orchestrator.ts        # Main loop - wakes every 5 min
+│   ├── orchestrator.ts        # Main loop - wakes hourly
+│   ├── auto-runner.ts         # Single scheduling cycle (cron/systemd entry)
+│   ├── optimized-runner.ts    # Cached, delta-aware PR monitoring (low overhead)
 │   ├── pr-monitor.ts         # PR status checker
 │   ├── security-scan.ts      # Vulnerability scanner
 │   ├── setup-cron.ts         # Cron/systemd setup
