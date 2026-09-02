@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "concise": "^2.0.0",
-    "cron-parser": "^1.0.0"
+    "cron-parser": "^5.10.0"
   },
   "devDependencies": {
     "bun": "latest"
