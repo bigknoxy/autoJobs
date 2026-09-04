@@ -21,6 +21,11 @@ permissions:
 
 jobs:
   security:
+    permissions:
+      contents: read
+      security-events: write
+      pull-requests: write
+      actions: read
     uses: bigknoxy/.github/.github/workflows/security-reusable.yml@main
     with:
       language: node
