@@ -13,7 +13,7 @@
     "install-skills": "bun run src/install-skills.ts"
   },
   "dependencies": {
-    "cron-parser": "^5.10.1"
+    "cron-parser": "^5.10.2"
   },
   "devDependencies": {
     "bun": "latest"
